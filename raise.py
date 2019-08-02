@@ -54,12 +54,13 @@ prev_stats = f'''SELECT sku, denomination, count, min, mean, percent_25, percent
 cursor.execute(prev_stats)
 prev = cursor.fetchall()
 
-summarize_change(int(prev[0][2]), int(row.count()), 'count')
-summarize_change(prev[0][3], row.min(), 'min')
-summarize_change(prev[0][4], row.mean(), 'mean')
-summarize_change(prev[0][5], row.quantile(.25), '25th %ile')
-summarize_change(prev[0][6], row.quantile(.5), '50th %ile')
-summarize_change(prev[0][7], row.quantile(.75), '75th %ile')
+if prev:
+    summarize_change(int(prev[0][2]), int(row.count()), 'count')
+    summarize_change(prev[0][3], row.min(), 'min')
+    summarize_change(prev[0][4], row.mean(), 'mean')
+    summarize_change(prev[0][5], row.quantile(.25), '25th %ile')
+    summarize_change(prev[0][6], row.quantile(.5), '50th %ile')
+    summarize_change(prev[0][7], row.quantile(.75), '75th %ile')
 
 cursor.execute('''INSERT INTO stats (sku, denomination, count, min, mean, std, percent_25, percent_50, percent_75, update_time) 
                   VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)''',
